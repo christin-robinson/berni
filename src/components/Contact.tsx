@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 
 const socialLinks = [
-  { icon: Instagram, href: '#', label: 'Instagram' },
+  { icon: Instagram, href: 'https://www.instagram.com/bernisha_07', label: 'Instagram' },
   { icon: Music, href: '#', label: 'SoundCloud' },
   { icon: Linkedin, href: '#', label: 'LinkedIn' },
   { icon: Mail, href: 'mailto:hello@example.com', label: 'Email' },
