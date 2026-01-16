@@ -48,7 +48,9 @@ const Hero = () => {
           </p>
           <h1 className='text-4xl md:text-6xl lg:text-7xl font-light tracking-tight text-foreground mb-6 animate-fade-in'>
             Crafting Sound with
-            <span className='block font-medium text-primary'>Precision & Soul</span>
+            <span className='block font-medium bg-gradient-to-r from-[#c97a5a] to-[#d98a3d] bg-clip-text text-transparent'>
+              Precision & Soul
+            </span>
           </h1>
           <p className='text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed animate-fade-in'>
             A fresh voice in audio engineering, bringing unwavering dedication and a deep love for sound to every
