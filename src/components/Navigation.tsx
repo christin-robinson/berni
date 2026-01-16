@@ -18,7 +18,7 @@ const Navigation = () => {
     { href: '#about', label: 'About' },
     { href: '#portfolio', label: 'Portfolio' },
     { href: '#testimonials', label: 'Testimonials' },
-    { href: '#contact', label: 'Contact' },
+    // { href: '#contact', label: 'Contact' },
   ];
 
   const scrollToSection = (href: string) => {
@@ -68,7 +68,7 @@ const Navigation = () => {
             className='md:hidden'
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X size={36} /> : <Menu size={36} />}
           </Button>
         </div>
 

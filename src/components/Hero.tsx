@@ -1,7 +1,22 @@
 import { ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Suspense, useState, useEffect } from 'react';
+import AudioGeometry from './AudioGeometry';
 
 const Hero = () => {
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroHeight = window.innerHeight;
+      const scrollY = window.scrollY;
+      const progress = Math.min(scrollY / heroHeight, 1);
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   const scrollToPortfolio = () => {
     const element = document.querySelector('#portfolio');
     if (element) {
@@ -18,28 +33,33 @@ const Hero = () => {
 
   return (
     <section className='min-h-screen flex items-center justify-center relative overflow-hidden'>
-      {/* Subtle background pattern */}
-      <div className='absolute inset-0 bg-gradient-to-b from-secondary/30 to-background' />
+      {/* 3D Audio Geometry Background */}
+      <Suspense fallback={<div className='absolute inset-0 bg-background' />}>
+        <AudioGeometry scrollProgress={scrollProgress} />
+      </Suspense>
+
+      {/* Overlay for readability */}
+      <div className='absolute inset-0 bg-background/20 z-0' />
 
       <div className='container mx-auto px-6 py-20 relative z-10'>
         <div className='max-w-3xl mx-auto text-center'>
           <p className='text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6 animate-fade-in'>
-            Professional Audio Services
+            Emerging Sound Engineer
           </p>
           <h1 className='text-4xl md:text-6xl lg:text-7xl font-light tracking-tight text-foreground mb-6 animate-fade-in'>
             Crafting Sound with
             <span className='block font-medium text-primary'>Precision & Soul</span>
           </h1>
           <p className='text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed animate-fade-in'>
-            Mixing and mastering engineer dedicated to bringing your vision to life with clarity, warmth, and
-            professional polish.
+            A fresh voice in audio engineering, bringing unwavering dedication and a deep love for sound to every
+            project. Ready to craft your sonic vision.
           </p>
           <div className='flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in'>
             <Button onClick={scrollToPortfolio} size='lg' className='rounded-full px-8'>
-              View My Work
+              Explore My Work
             </Button>
             <Button onClick={scrollToContact} variant='outline' size='lg' className='rounded-full px-8'>
-              Let's Connect
+              Let's Create Together
             </Button>
           </div>
         </div>
@@ -48,7 +68,7 @@ const Hero = () => {
       {/* Scroll indicator */}
       <button
         onClick={scrollToPortfolio}
-        className='absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors animate-bounce'
+        className='absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors animate-bounce z-10'
         aria-label='Scroll down'
       >
         <ArrowDown size={24} />
