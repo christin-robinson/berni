@@ -35,7 +35,11 @@ const Navigation = () => {
         isScrolled ? 'bg-background/95 backdrop-blur-sm shadow-sm' : 'bg-transparent'
       }`}
     >
-      <div className='container mx-auto px-6 py-4'>
+      <div
+        className={`container mx-auto px-6 py-4 ${
+          isMobileMenuOpen ? 'bg-background/95 backdrop-blur-sm shadow-sm' : 'bg-transparent'
+        }`}
+      >
         <div className='flex items-center justify-between'>
           <a
             href='#'

@@ -9,9 +9,10 @@ class WaveMaterial extends THREE.ShaderMaterial {
       uniforms: {
         uTime: { value: 0 },
         uHover: { value: 0 },
-        uColor1: { value: new THREE.Color('#c9a88a') },
-        uColor2: { value: new THREE.Color('#a67c52') },
-        uColor3: { value: new THREE.Color('#d4b896') },
+        uCameraPosition: { value: new THREE.Vector3() },
+        uColor1: { value: new THREE.Color('#c97a5a') }, // Warm terracotta (primary)
+        uColor2: { value: new THREE.Color('#d98a3d') }, // Warm golden accent
+        uColor3: { value: new THREE.Color('#f5e6d3') }, // Soft cream (background tone)
       },
       vertexShader: `
         varying vec2 vUv;
@@ -41,6 +42,7 @@ class WaveMaterial extends THREE.ShaderMaterial {
         varying vec3 vNormal;
         uniform float uTime;
         uniform float uHover;
+        uniform vec3 uCameraPosition;
         uniform vec3 uColor1;
         uniform vec3 uColor2;
         uniform vec3 uColor3;
@@ -59,18 +61,37 @@ class WaveMaterial extends THREE.ShaderMaterial {
           float ripple = sin(dist * 30.0 - uTime * 4.0) * 0.5 + 0.5;
           pattern = mix(pattern, ripple, 0.3);
           
-          // Color mixing based on pattern
+          // Color mixing based on pattern with higher contrast
           vec3 color = mix(uColor1, uColor2, pattern);
-          color = mix(color, uColor3, wave3 * 0.5);
+          color = mix(color, uColor3, wave3 * 0.4);
+          
+          // Add subtle depth with soft shadows for cream/golden theme
+          float shadow = smoothstep(0.3, 0.7, pattern);
+          color *= (0.9 + shadow * 0.1);
           
           // Add shimmer on hover
           float shimmer = sin(vUv.x * 50.0 + uTime * 5.0) * sin(vUv.y * 50.0 + uTime * 4.0);
-          color += shimmer * uHover * 0.1;
+          color += shimmer * uHover * 0.15;
           
-          // Fresnel effect for edge glow
-          vec3 viewDir = normalize(cameraPosition - vPosition);
-          float fresnel = pow(1.0 - dot(vNormal, viewDir), 2.0);
-          color += uColor3 * fresnel * 0.3;
+          // Enhanced Fresnel effect for edge glow and shine
+          vec3 viewDir = normalize(uCameraPosition - vPosition);
+          float fresnel = pow(1.0 - max(dot(vNormal, viewDir), 0.0), 2.5);
+          color += uColor3 * fresnel * 0.5;
+          
+          // Add specular highlight for shine with warm terracotta/golden tint
+          vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+          float specular = pow(max(dot(reflect(-lightDir, vNormal), viewDir), 0.0), 32.0);
+          color += vec3(1.0, 0.85, 0.65) * specular * 0.5;
+          
+          // Ensure minimum brightness to stand out against light backgrounds
+          float minBrightness = 0.35;
+          float brightness = dot(color, vec3(0.299, 0.587, 0.114));
+          if (brightness < minBrightness) {
+            color = mix(color, uColor1, (minBrightness - brightness) * 0.4);
+          }
+          
+          // Add warm terracotta/golden glow matching theme
+          color += vec3(0.95, 0.75, 0.55) * fresnel * 0.25;
           
           gl_FragColor = vec4(color, 1.0);
         }
@@ -96,7 +117,7 @@ interface AnimatedMeshProps {
 const AnimatedMesh = ({ scrollProgress }: AnimatedMeshProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<WaveMaterial>(null);
-  const { mouse, viewport } = useThree();
+  const { mouse, viewport, camera } = useThree();
   const [hovered, setHovered] = useState(false);
 
   useFrame(state => {
@@ -106,6 +127,7 @@ const AnimatedMesh = ({ scrollProgress }: AnimatedMeshProps) => {
 
     // Update shader uniforms
     materialRef.current.uniforms.uTime.value = time;
+    materialRef.current.uniforms.uCameraPosition.value.copy(camera.position);
     materialRef.current.uniforms.uHover.value = THREE.MathUtils.lerp(
       materialRef.current.uniforms.uHover.value,
       hovered ? 1 : 0,
@@ -176,7 +198,7 @@ const WaveRings = () => {
       {rings.map((ring, i) => (
         <mesh key={i}>
           <torusGeometry args={[ring.radius, ring.tube, 16, 100]} />
-          <meshBasicMaterial color='#c9a88a' transparent opacity={0.3 - i * 0.08} />
+          <meshBasicMaterial color='#c97a5a' transparent opacity={0.5 - i * 0.12} />
         </mesh>
       ))}
     </group>
@@ -191,9 +213,10 @@ const AudioGeometry = ({ scrollProgress = 0 }: AudioGeometryProps) => {
   return (
     <div className='absolute inset-0 w-full h-full cursor-pointer'>
       <Canvas camera={{ position: [0, 0, 5], fov: 50 }} style={{ background: 'transparent' }} dpr={[1, 2]}>
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[10, 10, 5]} intensity={0.8} />
-        <pointLight position={[-10, -10, -5]} intensity={0.4} color='#c9a88a' />
+        <ambientLight intensity={0.7} />
+        <directionalLight position={[10, 10, 5]} intensity={1.3} />
+        <pointLight position={[-10, -10, -5]} intensity={0.7} color='#d98a3d' />
+        <spotLight position={[5, 5, 5]} angle={0.3} penumbra={0.5} intensity={1.0} color='#d98a3d' />
         <AnimatedMesh scrollProgress={scrollProgress} />
         <WaveRings />
       </Canvas>
