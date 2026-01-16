@@ -39,13 +39,12 @@ const Navigation = () => {
         className={`container mx-auto px-6 py-4 ${isMobileMenuOpen ? 'backdrop-blur-md shadow-sm' : 'bg-transparent'}`}
       >
         <div className='flex items-center justify-between'>
-          <a
-            href='#'
+          <button
             className='text-2xl font-semibold tracking-tight text-foreground'
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
             Bernisha<span className='text-primary text-4xl'>.</span>
-          </a>
+          </button>
 
           {/* Desktop Navigation */}
           <div className='hidden md:flex items-center gap-8'>
