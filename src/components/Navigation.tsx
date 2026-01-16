@@ -43,7 +43,10 @@ const Navigation = () => {
             className='text-2xl font-semibold tracking-tight text-foreground'
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            Bernisha<span className='text-primary text-4xl'>.</span>
+            Bernisha
+            <span className='text-4xl bg-gradient-to-r from-[#c97a5a] to-[#d98a3d] bg-clip-text text-transparent'>
+              .
+            </span>
           </button>
 
           {/* Desktop Navigation */}
