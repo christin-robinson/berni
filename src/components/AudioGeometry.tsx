@@ -10,9 +10,9 @@ class WaveMaterial extends THREE.ShaderMaterial {
         uTime: { value: 0 },
         uHover: { value: 0 },
         uCameraPosition: { value: new THREE.Vector3() },
-        uColor1: { value: new THREE.Color('#c97a5a') }, // Warm terracotta (primary)
-        uColor2: { value: new THREE.Color('#d98a3d') }, // Warm golden accent
-        uColor3: { value: new THREE.Color('#f5e6d3') }, // Soft cream (background tone)
+        uColor1: { value: new THREE.Color('#e8c4a8') }, // Light terracotta tint
+        uColor2: { value: new THREE.Color('#f0d4a5') }, // Light golden tint
+        uColor3: { value: new THREE.Color('#faf8f5') }, // Very light cream
       },
       vertexShader: `
         varying vec2 vUv;
@@ -61,37 +61,40 @@ class WaveMaterial extends THREE.ShaderMaterial {
           float ripple = sin(dist * 30.0 - uTime * 4.0) * 0.5 + 0.5;
           pattern = mix(pattern, ripple, 0.3);
           
-          // Color mixing based on pattern with higher contrast
+          // Color mixing based on pattern - lighter for text readability
           vec3 color = mix(uColor1, uColor2, pattern);
-          color = mix(color, uColor3, wave3 * 0.4);
+          color = mix(color, uColor3, wave3 * 0.6);
           
-          // Add subtle depth with soft shadows for cream/golden theme
+          // Make overall color lighter and more subtle
+          color = mix(color, uColor3, 0.4);
+          
+          // Add subtle depth with very soft shadows
           float shadow = smoothstep(0.3, 0.7, pattern);
-          color *= (0.9 + shadow * 0.1);
+          color *= (0.95 + shadow * 0.05);
           
           // Add shimmer on hover
           float shimmer = sin(vUv.x * 50.0 + uTime * 5.0) * sin(vUv.y * 50.0 + uTime * 4.0);
           color += shimmer * uHover * 0.15;
           
-          // Enhanced Fresnel effect for edge glow and shine
+          // Enhanced Fresnel effect for subtle edge glow
           vec3 viewDir = normalize(uCameraPosition - vPosition);
           float fresnel = pow(1.0 - max(dot(vNormal, viewDir), 0.0), 2.5);
-          color += uColor3 * fresnel * 0.5;
+          color += uColor3 * fresnel * 0.3;
           
-          // Add specular highlight for shine with warm terracotta/golden tint
+          // Add subtle specular highlight
           vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
           float specular = pow(max(dot(reflect(-lightDir, vNormal), viewDir), 0.0), 32.0);
-          color += vec3(1.0, 0.85, 0.65) * specular * 0.5;
+          color += vec3(1.0, 0.95, 0.9) * specular * 0.3;
           
-          // Ensure minimum brightness to stand out against light backgrounds
-          float minBrightness = 0.35;
+          // Ensure colors stay light for text readability
+          float minBrightness = 0.65;
           float brightness = dot(color, vec3(0.299, 0.587, 0.114));
           if (brightness < minBrightness) {
-            color = mix(color, uColor1, (minBrightness - brightness) * 0.4);
+            color = mix(color, uColor3, (minBrightness - brightness) * 0.6);
           }
           
-          // Add warm terracotta/golden glow matching theme
-          color += vec3(0.95, 0.75, 0.55) * fresnel * 0.25;
+          // Clamp to light tones to avoid dark areas
+          color = max(color, vec3(0.85, 0.82, 0.78));
           
           gl_FragColor = vec4(color, 1.0);
         }
@@ -198,7 +201,7 @@ const WaveRings = () => {
       {rings.map((ring, i) => (
         <mesh key={i}>
           <torusGeometry args={[ring.radius, ring.tube, 16, 100]} />
-          <meshBasicMaterial color='#c97a5a' transparent opacity={0.5 - i * 0.12} />
+          <meshBasicMaterial color='#e8c4a8' transparent opacity={0.3 - i * 0.08} />
         </mesh>
       ))}
     </group>
@@ -213,10 +216,10 @@ const AudioGeometry = ({ scrollProgress = 0 }: AudioGeometryProps) => {
   return (
     <div className='absolute inset-0 w-full h-full cursor-pointer'>
       <Canvas camera={{ position: [0, 0, 5], fov: 50 }} style={{ background: 'transparent' }} dpr={[1, 2]}>
-        <ambientLight intensity={0.7} />
-        <directionalLight position={[10, 10, 5]} intensity={1.3} />
-        <pointLight position={[-10, -10, -5]} intensity={0.7} color='#d98a3d' />
-        <spotLight position={[5, 5, 5]} angle={0.3} penumbra={0.5} intensity={1.0} color='#d98a3d' />
+        <ambientLight intensity={0.8} />
+        <directionalLight position={[10, 10, 5]} intensity={1.1} />
+        <pointLight position={[-10, -10, -5]} intensity={0.5} color='#f0d4a5' />
+        <spotLight position={[5, 5, 5]} angle={0.3} penumbra={0.5} intensity={0.7} color='#f0d4a5' />
         <AnimatedMesh scrollProgress={scrollProgress} />
         <WaveRings />
       </Canvas>
