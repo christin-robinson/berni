@@ -18,7 +18,7 @@ const Navigation = () => {
     { href: '#about', label: 'About' },
     { href: '#portfolio', label: 'Portfolio' },
     { href: '#testimonials', label: 'Testimonials' },
-    { href: '#contact', label: 'Contact' },
+    // { href: '#contact', label: 'Contact' },
   ];
 
   const scrollToSection = (href: string) => {
@@ -35,15 +35,19 @@ const Navigation = () => {
         isScrolled ? 'bg-background/95 backdrop-blur-sm shadow-sm' : 'bg-transparent'
       }`}
     >
-      <div className='container mx-auto px-6 py-4'>
+      <div
+        className={`container mx-auto px-6 py-4 ${isMobileMenuOpen ? 'backdrop-blur-md shadow-sm' : 'bg-transparent'}`}
+      >
         <div className='flex items-center justify-between'>
-          <a
-            href='#'
+          <button
             className='text-2xl font-semibold tracking-tight text-foreground'
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            Bernisha<span className='text-primary text-4xl'>.</span>
-          </a>
+            Bernisha
+            <span className='text-4xl bg-gradient-to-r from-[#c97a5a] to-[#d98a3d] bg-clip-text text-transparent'>
+              .
+            </span>
+          </button>
 
           {/* Desktop Navigation */}
           <div className='hidden md:flex items-center gap-8'>
@@ -68,7 +72,7 @@ const Navigation = () => {
             className='md:hidden'
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X size={36} /> : <Menu size={36} />}
           </Button>
         </div>
 

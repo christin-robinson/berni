@@ -39,16 +39,17 @@ const About = () => {
               </h2>
               <div className='space-y-4 text-muted-foreground leading-relaxed'>
                 <p>
-                  With over a decade of experience in the audio industry, I've had the privilege of working with
-                  talented artists across genres—from intimate acoustic sessions to full-scale productions.
+                  Working across music, film, and live sound, I focus on creating audio that is clear, balanced and
+                  emotionally engaging from intimate studio recordings to dynamic live environments.
                 </p>
                 <p>
-                  My approach combines technical precision with creative intuition. I believe every project deserves
-                  individual attention and a personalized touch that honors the artist's unique vision.
+                  My approach blends technical precision with careful listening. Every project receives individual
+                  attention with sound shaped thoughtfully to support the artist’s vision the story on screen or the
+                  energy of a live performance.
                 </p>
                 <p>
-                  Based in Los Angeles, I work with clients worldwide, bringing warmth, clarity, and professional polish
-                  to every mix and master.
+                  Based in South India, I collaborate with artists, filmmakers, and creators to deliver sound that feels
+                  natural, polished and purpose-driven across every medium.
                 </p>
               </div>
             </div>

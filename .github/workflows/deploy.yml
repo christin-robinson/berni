@@ -4,11 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Environment to deploy to
+        description: Select the environment to deploy!
         type: choice
         options:
           - development
           - production
+
+  push:
+    branches:
+      - main
+      - dev
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -20,7 +25,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.environment || (github.ref_name == 'main' && 'production' || 'development') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
